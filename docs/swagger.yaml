@@ -1,0 +1,299 @@
+basePath: /v1
+definitions:
+  github_com_alxhtp_monogo_pkg_dto.ReqCreateUser:
+    properties:
+      email:
+        type: string
+      metadata:
+        $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.UserMetadata'
+      name:
+        type: string
+    required:
+    - email
+    - name
+    type: object
+  github_com_alxhtp_monogo_pkg_dto.ReqUpdateUser:
+    properties:
+      email:
+        type: string
+      metadata:
+        $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.UserMetadata'
+      name:
+        type: string
+      status:
+        type: integer
+    type: object
+  github_com_alxhtp_monogo_pkg_dto.ResUser:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      metadata:
+        $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.UserMetadata'
+      name:
+        type: string
+      status:
+        type: integer
+    type: object
+  github_com_alxhtp_monogo_pkg_dto.ResUserList:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ResUser'
+        type: array
+      message:
+        type: string
+      page:
+        $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto_base.BasePagination'
+      stacktrace:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - message
+    - success
+    type: object
+  github_com_alxhtp_monogo_pkg_dto.ResUserSingle:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ResUser'
+      message:
+        type: string
+      stacktrace:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - message
+    - success
+    type: object
+  github_com_alxhtp_monogo_pkg_dto.UserMetadata:
+    properties:
+      address:
+        maxLength: 255
+        type: string
+      phone:
+        type: string
+      sex:
+        enum:
+        - male
+        - female
+        type: string
+    required:
+    - address
+    - phone
+    - sex
+    type: object
+  github_com_alxhtp_monogo_pkg_dto_base.BasePagination:
+    properties:
+      count:
+        type: integer
+      limit:
+        type: integer
+      offset:
+        type: integer
+      order_by:
+        type: string
+    required:
+    - count
+    - limit
+    - offset
+    - order_by
+    type: object
+  github_com_alxhtp_monogo_pkg_dto_base.BaseRes:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      stacktrace:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - message
+    - success
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Monogo API Collection
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Monogo API
+  version: "1.0"
+paths:
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get users by filter
+      parameters:
+      - description: User IDs, comma separated uuids
+        in: query
+        name: ids
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Email
+        in: query
+        name: email
+        type: string
+      - description: Status
+        in: query
+        name: status
+        type: integer
+      - description: Sex
+        in: query
+        name: sex
+        type: string
+      - description: Address
+        in: query
+        name: address
+        type: string
+      - description: Phone
+        in: query
+        name: phone
+        type: string
+      - description: Include Deleted
+        in: query
+        name: include-deleted
+        type: boolean
+      - description: Show Count
+        in: query
+        name: show-count
+        type: boolean
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: 'Order By, default: +created_at'
+        in: query
+        name: order-by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ResUserList'
+      summary: Get users by filter
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ReqCreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ResUserSingle'
+      summary: Create a new user
+      tags:
+      - User
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto_base.BaseRes'
+      summary: Delete a user
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ResUserSingle'
+      summary: Get a user by ID
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ReqUpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_alxhtp_monogo_pkg_dto.ResUserSingle'
+      summary: Update a user
+      tags:
+      - User
+securityDefinitions:
+  Authorization:
+    description: Authentication token (Bearer token)
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

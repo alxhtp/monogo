@@ -1,0 +1,28 @@
+# Air configuration for live reload in development
+# Docs: https://github.com/cosmtrek/air
+
+# Working directory inside the container
+root = "."
+
+# Watch for changes in these directories/files
+[watch]
+  # Watch all Go files except vendor, migration, .git
+  include = ["./**/*.go"]
+  exclude_dir = ["vendor", "migration", ".git"]
+
+# Build settings
+[build]
+  # Command to build the app
+  cmd = "go build -o ./tmp/main ./cmd/main.go"
+  # Binary to run
+  bin = "./tmp/main"
+  # Delay before restart (ms)
+  delay = 1000
+  # Send interrupt before killing
+  kill_signal = "INT"
+  # Log color
+  log_color = "true"
+
+# Log settings
+[log]
+  time = true

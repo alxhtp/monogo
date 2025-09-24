@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: monogo-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monogo
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    # Healthcheck to ensure DB is ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      target: dev  # Use 'prod' for production
+    container_name: monogo-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # DB connection string example
+      DATABASE_URL: postgres://postgres:postgres@db:5432/monogo?sslmode=disable
+      # Add other env vars as needed
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app  # Mount source for hot reload in dev
+    # Command is set in Dockerfile (air for dev)
+
+volumes:
+  db_data:
+    # Persistent volume for Postgres data
